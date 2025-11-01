@@ -22,19 +22,21 @@
                 <li><a href=calc_stock.html>Calc stock</a></li>
             </ul>
         </nav>
-    <h1>Stock Gain Calculator</h1>
-    <p>Enter the buy price per share and quantity to calculate the sell prices needed for 2%, 5%, and 10% net gain after fees.</p>
-    <form id="stockForm">
-        <label for="price">Buy Price per Share (RM):</label>
-        <input type="number" id="price" step="0.01" min="0" required>
+    <main>
+        <h1>Stock Gain Calculator</h1>
+        <p>Enter the buy price per share and quantity to calculate the sell prices needed for 2%, 5%, and 10% net gain after fees.</p>
+        <form id="stockForm">
+            <label for="price">Buy Price per Share (RM):</label>
+            <input type="number" id="price" step="0.01" min="0" required>
+            
+            <label for="quantity">Quantity of Shares:</label>
+            <input type="number" id="quantity" min="1" required>
+            
+            <button type="submit">Calculate</button>
+        </form>
         
-        <label for="quantity">Quantity of Shares:</label>
-        <input type="number" id="quantity" min="1" required>
-        
-        <button type="submit">Calculate</button>
-    </form>
-    
-    <div id="result"></div>
+        <div id="result"></div>
+    </main>
 
     <script>
         document.getElementById('stockForm').addEventListener('submit', function(e) {
