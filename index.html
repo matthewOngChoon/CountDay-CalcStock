@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>Count day</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="logo"><a href="index.html">General</a></div>
+            <ul>
+                <li><a href=index.html>Count day</a></li>
+                <li><a href=calc_stock.html>Calc stock</a></li>
+            </ul>
+        </nav>
+        <main>
+            <h2>Count days</h2>
+
+            <label for="start">Start date:</label>
+            <input type="date" id="start">
+
+            <label for="end">End date:</label>
+            <input type="date" id="end">
+
+            <button onclick="calculate()">Calculate day(s)</button>
+
+            <div id="result" style="margin-top: 15px; font-size: 18px;"></div>
+        </main>
+
+        <script>
+        // 🟩 Run only after the page fully loads
+        window.addEventListener('load', function () {
+
+            // ✅ Get input and result elements AFTER page load
+            const startInput = document.getElementById('start');
+            const endInput = document.getElementById('end');
+            const resultDiv = document.getElementById('result');
+
+            // ✅ Set default start date = today
+            const today = new Date().toISOString().split('T')[0];
+            startInput.value = today;
+
+            // ✅ Set default end date = 24 Jan 2026
+            const defaultEndDate = '2026-01-24';
+            endInput.value = defaultEndDate;
+
+            console.log("Start:", startInput.value, "End:", endInput.value);
+
+            // 🟨 Attach event listener instead of inline onclick
+            const button = document.querySelector("button");
+            button.addEventListener("click", function () {
+            calculate(startInput, endInput, resultDiv);
+            });
+        });
+
+        // 🟧 Function now accepts inputs as parameters
+        function calculate(startInput, endInput, resultDiv) {
+            const startValue = startInput.value;
+            const endValue = endInput.value;
+
+            if (!startValue || !endValue) {
+            resultDiv.textContent = "⚠️ Please select both start and end dates.";
+            return;
+            }
+
+            const start = new Date(startValue);
+            const end = new Date(endValue);
+
+            if (end < start) {
+            resultDiv.textContent = "⚠️ End date must be after start date.";
+            return;
+            }
+
+            const diffTime = end - start;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffWeeks = (diffDays / 7).toFixed(2);
+            const diffMonths = (diffDays / 30.44).toFixed(2);
+
+            resultDiv.innerHTML = `
+            🗓️ <b>${diffDays}</b> days<br>
+            📅 <b>${diffWeeks}</b> weeks<br>
+            📆 <b>${diffMonths}</b> months
+            `;
+        }
+
+        
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Gain Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { max-width: 400px; }
+        label { display: block; margin-top: 10px; }
+        input { width: 100%; padding: 5px; }
+        button { margin-top: 10px; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+            <div class="logo"><a href="index.html">General</a></div>
+            <ul>
+                <li><a href=index.html>Count day</a></li>
+                <li><a href=calc_stock.html>Calc stock</a></li>
+            </ul>
+        </nav>
+    <h1>Stock Gain Calculator</h1>
+    <p>Enter the buy price per share and quantity to calculate the sell prices needed for 2%, 5%, and 10% net gain after fees.</p>
+    <form id="stockForm">
+        <label for="price">Buy Price per Share (RM):</label>
+        <input type="number" id="price" step="0.01" min="0" required>
+        
+        <label for="quantity">Quantity of Shares:</label>
+        <input type="number" id="quantity" min="1" required>
+        
+        <button type="submit">Calculate</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('stockForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const price = parseFloat(document.getElementById('price').value);
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            
+            const buy_trans = price * quantity;
+            
+            const buy_comm = 0.0003 * buy_trans;
+            const buy_platform = 3;
+            const buy_clearing = Math.min(0.0003 * buy_trans, 1000);
+            const buy_stamp = Math.min(Math.ceil(buy_trans / 1000) * 1, 1000);
+            const buy_sst = 0;
+            
+            const buy_fees = buy_comm + buy_platform + buy_clearing + buy_stamp + buy_sst;
+            const total_cost = buy_trans + buy_fees;
+            
+            const gains = [2, 5, 10];
+            let output = '<h2>Results:</h2>';
+            
+            gains.forEach(g => {
+                const required_net = total_cost * (1 + g / 100);
+                
+                // Initial approximation
+                const approx_rate = 0.0003 + 0.0003 + 0.001; // comm + clearing + stamp approx
+                let sell_trans = (required_net + 3) / (1 - approx_rate);
+                
+                // Iterate to refine (up to 20 times or convergence)
+                for (let i = 0; i < 20; i++) {
+                    const sell_comm = 0.0003 * sell_trans;
+                    const sell_clearing = Math.min(0.0003 * sell_trans, 1000);
+                    const sell_stamp = Math.min(Math.ceil(sell_trans / 1000) * 1, 1000);
+                    const sell_fees = sell_comm + 3 + sell_clearing + sell_stamp + 0;
+                    
+                    const net = sell_trans - sell_fees;
+                    const diff = required_net - net;
+                    
+                    if (Math.abs(diff) < 0.01) break;
+                    
+                    // Adjust sell_trans upwards or downwards
+                    sell_trans += diff / (1 - 0.0006); // approx without stamp
+                }
+                
+                const sell_price = sell_trans / quantity;
+                
+                output += `<p>For ${g}% gain: Sell Price per Share: RM ${sell_price.toFixed(4)}</p>`;
+            });
+            
+            document.getElementById('result').innerHTML = output;
+        });
+    </script>
+</body>
+</html>
