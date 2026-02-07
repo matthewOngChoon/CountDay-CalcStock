@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Average Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md">
+    
+    <h1 class="text-2xl font-bold mb-4 text-center">TXT Average Calculator</h1>
+
+    <!-- Instructions -->
+    <div class="bg-blue-50 p-4 rounded-xl mb-4 text-sm">
+      <p class="font-semibold mb-2">📌 TXT File Rules:</p>
+      <ul class="list-disc list-inside space-y-1">
+        <li>One number per line</li>
+        <li>Can include decimals (e.g., 10.5)</li>
+        <li>Can include negative numbers</li>
+        <li>No letters or symbols</li>
+        <li>No empty lines</li>
+      </ul>
+    </div>
+
+    <!-- File Input -->
+    <input 
+      type="file" 
+      id="fileInput" 
+      accept=".txt"
+      class="block w-full text-sm text-gray-500
+             file:mr-4 file:py-2 file:px-4
+             file:rounded-full file:border-0
+             file:text-sm file:font-semibold
+             file:bg-blue-50 file:text-blue-700
+             hover:file:bg-blue-100 mb-4"
+    />
+
+    <button 
+      onclick="calculateAverage()" 
+      class="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
+    >
+      Calculate Average
+    </button>
+
+    <div id="result" class="mt-4 text-center font-semibold text-lg"></div>
+    <div id="error" class="mt-2 text-center text-red-500 text-sm"></div>
+
+  </div>
+
+  <script>
+    function calculateAverage() {
+      const fileInput = document.getElementById('fileInput');
+      const resultDiv = document.getElementById('result');
+      const errorDiv = document.getElementById('error');
+
+      resultDiv.textContent = "";
+      errorDiv.textContent = "";
+
+      if (!fileInput.files.length) {
+        errorDiv.textContent = "Please upload a TXT file.";
+        return;
+      }
+
+      const file = fileInput.files[0];
+
+      if (!file.name.endsWith('.txt')) {
+        errorDiv.textContent = "Only .txt files are allowed.";
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const content = event.target.result;
+        const lines = content.split('\n');
+
+        let numbers = [];
+
+        for (let line of lines) {
+          line = line.trim();
+
+          if (line === "") {
+            errorDiv.textContent = "Empty lines are not allowed.";
+            return;
+          }
+
+          if (!/^[-+]?\d*\.?\d+$/.test(line)) {
+            errorDiv.textContent = `Invalid value detected: "${line}"`;
+            return;
+          }
+
+          numbers.push(parseFloat(line));
+        }
+
+        if (numbers.length === 0) {
+          errorDiv.textContent = "No valid numbers found.";
+          return;
+        }
+
+        const sum = numbers.reduce((a, b) => a + b, 0);
+        const avg = sum / numbers.length;
+
+        resultDiv.textContent = `Average: ${avg.toFixed(2)}`;
+      };
+
+      reader.readAsText(file);
+    }
+  </script>
+
+</body>
+</html>

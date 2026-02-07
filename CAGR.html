@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CAGR Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+    
+    <h1 class="text-2xl font-bold text-center mb-6">CAGR Calculator</h1>
+
+    <!-- Initial Value -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Initial Value</label>
+      <input type="number" id="initial" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 1000">
+    </div>
+
+    <!-- Final Value -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Final Value</label>
+      <input type="number" id="final" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 2000">
+    </div>
+
+    <!-- Years -->
+    <div class="mb-6">
+      <label class="block text-sm font-medium mb-1">Number of Years</label>
+      <input type="number" id="years" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 5">
+    </div>
+
+    <!-- Button -->
+    <button onclick="calculateCAGR()" 
+      class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
+      Calculate
+    </button>
+
+    <!-- Result -->
+    <div id="result" class="mt-6 text-center text-lg font-semibold"></div>
+
+  </div>
+
+<script>
+  function calculateCAGR() {
+    const initial = parseFloat(document.getElementById("initial").value);
+    const final = parseFloat(document.getElementById("final").value);
+    const years = parseFloat(document.getElementById("years").value);
+    const resultDiv = document.getElementById("result");
+
+    if (initial <= 0 || final <= 0 || years <= 0 || isNaN(initial) || isNaN(final) || isNaN(years)) {
+      resultDiv.innerHTML = "<span class='text-red-500'>Please enter valid positive numbers.</span>";
+      return;
+    }
+
+    const cagr = Math.pow(final / initial, 1 / years) - 1;
+    const percentage = (cagr * 100).toFixed(2);
+
+    resultDiv.innerHTML = `
+      CAGR: <span class="text-green-600">${percentage}%</span>
+    `;
+  }
+</script>
+
+</body>
+</html>
