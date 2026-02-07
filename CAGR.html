@@ -1,66 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>CAGR Calculator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<html>
+    <head>
+        <title>CAGR calculator</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    </head>
+    <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+        <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center mb-6">CAGR Calculator</h1>
+            
+            <!--Initial value-->
+            <div>
+                <label class="block text-sm font-medium mb-1">Initial value</label>
+                <input type="number" placeholder="0.100" id="initial" class="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
 
-  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-    
-    <h1 class="text-2xl font-bold text-center mb-6">CAGR Calculator</h1>
+            <!--Final value-->
+            <div>
+                <label class="block text-sm font-medium mb-1">Final value</label>
+                <input type="number" placeholder="0.500" id="final" class="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
 
-    <!-- Initial Value -->
-    <div class="mb-4">
-      <label class="block text-sm font-medium mb-1">Initial Value</label>
-      <input type="number" id="initial" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 1000">
-    </div>
+            <!--Year-->
+            <div>
+                <label class="block text-sm font-medium mb-1">Year(n)</label>
+                <input type="number" placeholder="15" id="year" class="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
 
-    <!-- Final Value -->
-    <div class="mb-4">
-      <label class="block text-sm font-medium mb-1">Final Value</label>
-      <input type="number" id="final" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 2000">
-    </div>
+            <!--Buttons-->
+            <div class="flex mt-4 gap-4">
+                <button onclick="clearValue()" class="w-1/4 bg-stone-500 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition">Clear</button>
+                <button onclick="calCAGR()" class="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition">Calculate</button>
+            </div>
 
-    <!-- Years -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium mb-1">Number of Years</label>
-      <input type="number" id="years" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="e.g. 5">
-    </div>
+            <!--Result-->
+            <div id="result" class="mt-6 text-center text-lg font-semibold"></div>
+        </div>
+        
+        <script>
+            function calCAGR(){
+                console.log("clicked calCAGR");
+                const initial=parseFloat(document.getElementById("initial").value);
+                const final=parseFloat(document.getElementById("final").value);
+                const year=parseFloat(document.getElementById("year").value);
+                const resultDiv=document.getElementById("result");
 
-    <!-- Button -->
-    <button onclick="calculateCAGR()" 
-      class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
-      Calculate
-    </button>
+                if (initial<=0 || final<=0 || year<=0|| isNaN(initial) || isNaN(final) || isNaN(year)){
+                    resultDiv.innerHTML="<span class='text-red-500'>Please enter valid numbers.</span>";
+                    return;
+                }
 
-    <!-- Result -->
-    <div id="result" class="mt-6 text-center text-lg font-semibold"></div>
+                const CAGR= Math.pow(final/initial, 1/year) - 1;
+                const percentage=(CAGR*100).toFixed(2);
+                const color=percentage > 0 ? "text-green-600" : "text-red-600";
 
-  </div>
+                if (percentage<=0){
+                    resultDiv.innerHTML=`CAGR: <span class='${color}'>${percentage}</span>%`
+                }
+                else{
+                    resultDiv.innerHTML=`CAGR: <span class='${color}'>${percentage}</span>%`
+                }
+                
+            }
 
-<script>
-  function calculateCAGR() {
-    const initial = parseFloat(document.getElementById("initial").value);
-    const final = parseFloat(document.getElementById("final").value);
-    const years = parseFloat(document.getElementById("years").value);
-    const resultDiv = document.getElementById("result");
+            function clearValue(){
+                const clearInput=document.querySelectorAll("input");
+                clearInput.forEach(input=>input.value="");
+                document.getElementById("result").innerHTML="";
 
-    if (initial <= 0 || final <= 0 || years <= 0 || isNaN(initial) || isNaN(final) || isNaN(years)) {
-      resultDiv.innerHTML = "<span class='text-red-500'>Please enter valid positive numbers.</span>";
-      return;
-    }
+                document.getElementById("initial").focus();
 
-    const cagr = Math.pow(final / initial, 1 / years) - 1;
-    const percentage = (cagr * 100).toFixed(2);
-
-    resultDiv.innerHTML = `
-      CAGR: <span class="text-green-600">${percentage}%</span>
-    `;
-  }
-</script>
-
-</body>
+                /*document.getElementById("initial").value = "";
+                  document.getElementById("final").value = "";
+                  document.getElementById("year").value = "";
+                  document.getElementById("result").innerHTML = "";
+                */
+            }
+        </script>
+    </body>
 </html>
